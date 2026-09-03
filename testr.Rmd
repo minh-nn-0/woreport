@@ -1,0 +1,111 @@
+---
+title: "Words Out Report"
+author: MinhNN
+date: 03.09.2026
+output:
+  revealjs::revealjs_presentation:
+    theme: sky
+    css: style.css
+    center: true
+    includes:
+      in_header: header.html
+---
+```{r, echo=FALSE}
+A = read.csv("20260903_024444.csv")
+library(ggplot2)
+```
+# *(Số liệu được lấy từ ngày 01.08.26 đến 31.08.26 của bản 2.1, IOS)*
+
+# Đánh giá qua về tình hình của dự án
+
+---
+
+- RRD1: **34.23%**
+- RRD7: **11.82%**
+- RRD14: **11.82%**
+- RRD30:  **2.44%**
+
+---
+
+- Installs: 5.06k
+- DAU: ~800
+
+---
+
+```{r plotly-chart, fig.width = 9, fig.height = 5, echo=FALSE}
+reach = read.csv("reach.csv")
+ggplotly(ggplot(reach, aes(x = level, y = reach_rate)) + geom_line() + theme_minimal()
++ scale_x_continuous(breaks = seq(0, 100, by = 5) + labs(title = "Reach Rate")), width = 900, height = 500)
+```
+
+# Level Analysis
+
+## Top 10 level with highest drop rate
+
+```{r, fig.width = 9, echo=FALSE}
+a <- A[c('level','drop.rate')]
+a <- a[order(-a$drop.rate), ] %>% head(10)
+
+knitr::kable(a, row.names=FALSE)
+```
+---
+
+```{r, fig.width = 9, echo=FALSE}
+
+b <- A[rownames(a), ]
+c <- b[c('level', 'win.rate')]
+
+knitr::kable(c, row.names=FALSE)
+```
+---
+
+```{r, fig.width = 9, echo=FALSE}
+
+reasons <- c('drop.bf.complete','drop.af.lose','drop.af.win')
+b$drop_reason <- reasons[max.col(b[reasons])]
+b$drop_reason_percent <- do.call(pmax, b[reasons])
+
+library(tidyr)
+d <- pivot_longer(b, cols=all_of(reasons), names_to="reason", values_to="value")
+
+ggplot(d, aes(fill=reason, y=value, x=factor(level))) +
+  geom_bar(position="fill", stat="identity")
+```
+---
+
+
+# Potential Causes
+
+
+## Độ khó (chịu)
+(lv 10, 15, 18, 20)
+
+---
+
+- Lv 10 tăng độ phức tạp quá mạnh
+- Ép khó chịu
+- Không có tính thử thách kĩ năng
+- Chơi mỏi mắt
+
+# Game chán
+Level 5 - lv 10
+
+---
+
+- Game dễ (not a compliment)
+- Pacing giới thiệu booster 
+- Không có mục tiêu ngắn hạn và dài hạn
+
+
+# Potential Fixes
+
+---
+
+Fix lại độ khó. Cần tăng tiến độ khó rõ ràng hơn
+
+---
+
+- Metalayer
+- Theme cho level, chia thành chapter, world,...
+- Fix cứng màu cho các chữ
+- Giới thiệu booster 
